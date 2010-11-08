@@ -17,11 +17,6 @@ void csv_free_row(Row* row)
     free(row);
 }
 
-void csv_free_wide_row(WideRow* row)
-{
-    csv_free_row((Row*)row);
-}
-
 /**
  * reads the FILE for the next row of the csv, note: row could be multi-lined
  */
@@ -161,5 +156,58 @@ Row* csv_get_row(FILE *file_in, char delim, unsigned int max_cell_count)
     row->row = (char**)realloc(row->row, sizeof(char*) * row->num_items);
     row->cell_length = (unsigned int*) realloc(row->cell_length, sizeof(unsigned int) * row->num_items);
     return row;
+}
+
+
+unsigned int csv_write_row(FILE *file_out, Row *row, char delim)
+{
+    int i, j, itm;
+    unsigned char has_delim = 0;
+    unsigned char has_quote = 0 ;
+    char new_line = '\n';
+    char null = '\0';
+    for (i = 0; i < row->num_items; i++)
+    {
+        has_delim = 0;
+        has_quote = 0;
+        itm       = 1;
+
+        //enough memory if every single char has to be escaped
+        char char_tmp_str[row->cell_length[i] * 2 + 3]; 
+        for(j = 0; j < row->cell_length[i]; j++)
+        {
+            if (row->row[i][j] == delim)
+            {
+                has_delim = 1;
+            }
+            else if(row->row[i][j] ==  '"')
+            {
+                has_quote = 1;
+                char_tmp_str[itm] = '"';
+                itm += 1;
+            }
+            char_tmp_str[itm] = row->row[i][j]; 
+            itm += 1;
+        }
+        if (has_quote == 1 || has_delim == 1)
+        {
+            // wrap quote
+            char_tmp_str[0] = '"';
+            char_tmp_str[itm] = '"';
+            fwrite(char_tmp_str, sizeof(char), itm + 1, file_out);
+        }
+        else
+        {
+            fwrite(char_tmp_str + 1, sizeof(char), itm - 1, file_out);
+        }
+
+        if (i != row->num_items - 1)
+        {
+            fwrite(&delim, sizeof(char), 1, file_out);
+        }
+    }
+    fwrite(&new_line, sizeof(char), 1, file_out);
+    fwrite(&null, sizeof(char), 1, file_out);
+    return 1;
 }
 

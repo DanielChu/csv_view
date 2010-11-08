@@ -62,5 +62,5 @@ void csv_free_row(Row* row);
 /**
  * write a csv to given file pointer
  */
-unsigned int csv_write_row(FILE *file_out, Row *row);
+unsigned int csv_write_row(FILE *file_out, Row *row, char delim);
 #endif
