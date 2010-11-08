@@ -1,0 +1,30 @@
+Command line:
+
+usage: csv_view <options> filename
+        <options>
+        -d <delim> uses <delim> character as delimter (default ,)
+        -h use first line as header
+        -m max cell width
+        -n min cell width
+
+NOTE: if no file name is given then stdin is used 
+
+In Program Commands:
+h or left:          move left
+l or right:         move right
+k or up:            move up one row
+j or down:          move down one row
+
+q:                  quit
+^:                  goto start of line
+$:                  goto end of line
+g:                  goto end of document
+G:                  goto start of document
+
+K:                  Page Up
+J:                  Page Down
+H:                  turn header on or off
+
+Reserved (not implemented):
+/:                  search
+?:                  reverse search

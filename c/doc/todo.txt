@@ -1,0 +1,4 @@
+* implement simple search
+* fix alignment for multiline cells of unicode characters
+* reimplement everything to have proper handling of Unicode
+* fix bug when stdin is used and multiple ctrl-d is needed before input is terminated
