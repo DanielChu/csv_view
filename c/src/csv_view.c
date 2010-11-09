@@ -68,7 +68,7 @@ void block_insert_row(Row* row, Block* blk, unsigned int *max_cell_list)
     for(i = 0; i < row->num_items; ++i)
     {
         max_cell_list[i] = row->cell_length[i] > max_cell_list[i] ?  row->cell_length[i] :  max_cell_list[i];
-        fprintf(stderr, "************\n%s\n*************\n", row->row[i]);
+        //fprintf(stderr, "************\n%s\n*************\n", row->row[i]);
     }
 }
 
@@ -294,7 +294,8 @@ unsigned int render_cell
             } 
 
             cur_row += 1;
-            fprintf(stderr, "zzzzz \t ROW = %d\n", cur_row);
+
+            //fprintf(stderr, "zzzzz \t ROW = %d\n", cur_row);
             if (cur_row == max_cell_height || cur_row == max_y)
             {
                 break;
