@@ -1,0 +1,9 @@
+csv_view
+
+csv_view is a command line csv viewer which utilises the ncurses library to display csv files in a nice
+formatted manner.
+
+csv_view consists of three individual parts
+- c csv reader and writer library
+- c++ csv reader and writer library
+- csv view which uses the c library and display the formated data on screen
