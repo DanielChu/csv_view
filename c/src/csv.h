@@ -27,7 +27,7 @@
 #include <locale.h>
 
 #ifndef MAX_CELL_SIZE
-    #define MAX_CELL_SIZE 5000000
+    #define MAX_CELL_SIZE 10240
 #endif
 
 typedef struct Row
