@@ -33,6 +33,7 @@ void csv_free_row(Row* row)
     {
         free(row->row[i]);
     }
+    free(row->cell_length);
     free(row->row);
     free(row);
 }
@@ -46,7 +47,7 @@ Row* csv_get_row(FILE *file_in, char delim, unsigned int max_cell_count)
     char has_escape_quote = 0;
 
     char current_cell[MAX_CELL_SIZE];
-    char * current_line = (char*) malloc(sizeof(char) * 1000000);
+    char * current_line = (char*) malloc(sizeof(char) * MAX_LINE_LENGTH);
     unsigned int cell_len;
     char *itr;
     char *cell_itr = NULL;
@@ -68,7 +69,7 @@ Row* csv_get_row(FILE *file_in, char delim, unsigned int max_cell_count)
     row->num_items = 0;
 
     cell_itr = current_cell; 
-    while(fgets(current_line, 1000000, file_in) != NULL)
+    while(fgets(current_line, MAX_LINE_LENGTH, file_in) != NULL)
     {
         itr = current_line; 
 
@@ -162,6 +163,8 @@ Row* csv_get_row(FILE *file_in, char delim, unsigned int max_cell_count)
             break;
         }
     }
+
+    free(current_line);
 
     // if empty then return false
     if (row->num_items == 0)

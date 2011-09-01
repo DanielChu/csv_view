@@ -26,8 +26,20 @@
 #include <wchar.h>
 #include <locale.h>
 
+#ifndef MAX_LINE_LENGTH
+    #ifdef WINDOWS
+        #define MAX_LINE_LENGTH 10240
+    #else
+        #define MAX_LINE_LENGTH 1000000
+    #endif
+#endif
+
 #ifndef MAX_CELL_SIZE
-    #define MAX_CELL_SIZE 5000000
+    #ifdef WINDOWS
+        #define MAX_CELL_SIZE 10240
+    #else
+        #define MAX_CELL_SIZE 5000000
+    #endif
 #endif
 
 typedef struct Row
