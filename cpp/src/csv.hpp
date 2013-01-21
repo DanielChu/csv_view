@@ -25,8 +25,7 @@
 #include <string>
 #include <vector>
 
-class CSV
-{
+class CSV {
 public:
     void readRow(std::istream &input, std::vector<std::string> &row, char delim);
     void writeRow(std::ostream &output, std::vector<std::string> &row, char delim);

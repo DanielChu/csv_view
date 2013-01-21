@@ -42,8 +42,7 @@
     #endif
 #endif
 
-typedef struct Row
-{
+typedef struct Row {
     // array of char* strings where each char* is a cell
     char **row;
     // array of int where each int is length of a cell, used to avoid overuse of strlen
@@ -57,8 +56,7 @@ typedef struct Row
  * designed for experimental wchar_t support
  * currently not used
  */
-typedef struct WideRow
-{
+typedef struct WideRow {
     // array of char* strings where each char* is a cell
     wchar_t **row;
     // array of int where each int is length of a cell, used to avoid overuse of strlen
@@ -69,13 +67,11 @@ typedef struct WideRow
 }WideRow;
 
 /*
-typedef struct CSVReader
-{
+typedef struct CSVReader {
     FILE * file_in
 }CSVReader
 
-typedef struct CSVWriter
-{
+typedef struct CSVWriter {
     FILE * file_out
 }CSVWriter
 */

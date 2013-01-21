@@ -22,69 +22,52 @@
 
 using namespace std;
 
-void CSV::readRow(std::istream &input, vector<string> &row, char delim = ',')
-{
+void CSV::readRow(std::istream &input, vector<string> &row, char delim = ',') {
     bool in_quote = false;
     bool has_escape_quote = false;
     row.clear();  
     string line;
     string cur = "";
 
-    while(getline(input, line))
-    {
+    while(getline(input, line)) {
         cur = "";
-        for (unsigned int i = 0; i < line.size(); i++)
-        {
-            if (line[i] == '"')
-            {
-                if (in_quote)
-                {
-                    if (!has_escape_quote)
-                    {
-                        if (line[i + 1] == '"' && i + 2 < line.size() )
-                        {
+        for (unsigned int i = 0; i < line.size(); i++) {
+            if (line[i] == '"') {
+                if (in_quote) {
+                    if (!has_escape_quote) {
+                        if (line[i + 1] == '"' && i + 2 < line.size() ) {
                             has_escape_quote = true;
                         }
-                        else
-                        {
+                        else {
                             in_quote = false;
                         }
                     }
-                    else
-                    {
+                    else {
                         cur.push_back('"');
                         has_escape_quote = false;
                     }
                 }
-                else
-                {
+                else {
                     in_quote = true;
                 }
             }
-            else if(line[i] == delim)
-            {
-                if(in_quote)
-                {
+            else if(line[i] == delim) {
+                if(in_quote) {
                     cur.push_back(line[i]);
                 }
-                else
-                {
+                else {
                     row.push_back(cur);
                     cur = "";
                 }
             }
-            else
-            {
+            else {
                 cur.push_back(line[i]);
             }
         }
         
-        if (!in_quote)
-        {
-            if (cur != "")
-            {
-                if (cur[cur.size() - 1] == '\n')
-                {
+        if (!in_quote) {
+            if (cur != "") {
+                if (cur[cur.size() - 1] == '\n') {
                     cur.erase(cur.size() - 1, 1);
                 }
                 row.push_back(cur);
@@ -95,24 +78,19 @@ void CSV::readRow(std::istream &input, vector<string> &row, char delim = ',')
     return; 
 }
 
-void CSV::writeRow(std::ostream &output, vector<string> &row, char delim = ',')
-{
+void CSV::writeRow(std::ostream &output, vector<string> &row, char delim = ',') {
     bool has_delim = false;
     bool has_quote = false;
     char new_line = '\n';
     string output_line = "";
-    for (unsigned int i = 0; i < row.size(); i++)
-    {
+    for (unsigned int i = 0; i < row.size(); i++) {
         has_delim = false;
         has_quote = false;
-        for (unsigned int j = 0; j < row[i].size(); j++)
-        {
-            if (row[i][j] == delim)
-            {
+        for (unsigned int j = 0; j < row[i].size(); j++) {
+            if (row[i][j] == delim) {
                 has_delim = 1;
             }
-            else if (row[i][j] == '"')
-            {
+            else if (row[i][j] == '"') {
                 output_line.push_back('"');
                 has_quote = 1;
             }
@@ -121,13 +99,11 @@ void CSV::writeRow(std::ostream &output, vector<string> &row, char delim = ',')
                 
         }
 
-        if (has_quote || has_delim)
-        {
+        if (has_quote || has_delim) {
             output_line = '"' + output_line + '"';
         }
 
-        if (i < row.size() - 1)
-        {
+        if (i < row.size() - 1) {
             output_line.push_back(delim);
         }
         

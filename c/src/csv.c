@@ -26,11 +26,9 @@
 /**
  * frees row of the csv
  */
-void csv_free_row(Row* row)
-{
+void csv_free_row(Row* row) {
     unsigned int i;
-    for (i = 0; i < row->num_items; i++)
-    {
+    for (i = 0; i < row->num_items; i++) {
         free(row->row[i]);
     }
     free(row->cell_length);
@@ -41,8 +39,7 @@ void csv_free_row(Row* row)
 /**
  * reads the FILE for the next row of the csv, note: row could be multi-lined
  */
-Row* csv_get_row(FILE *file_in, char delim, unsigned int max_cell_count)
-{
+Row* csv_get_row(FILE *file_in, char delim, unsigned int max_cell_count) {
     char in_quote = 0;
     char has_escape_quote = 0;
 
@@ -53,71 +50,56 @@ Row* csv_get_row(FILE *file_in, char delim, unsigned int max_cell_count)
     char *cell_itr = NULL;
 
     Row * row = (Row *)calloc(1, sizeof(Row));
-    if (row == NULL)
-    {
+    if (row == NULL) {
         return NULL;
     }
 
     row->row = (char **)calloc(max_cell_count, sizeof(char*));
     row->cell_length = (unsigned int *)calloc(max_cell_count, sizeof(unsigned int));
 
-    if (row->row == NULL)
-    {
+    if (row->row == NULL) {
         free(row);
         return NULL;
     }
     row->num_items = 0;
 
     cell_itr = current_cell; 
-    while(fgets(current_line, MAX_LINE_LENGTH, file_in) != NULL)
-    {
+    while(fgets(current_line, MAX_LINE_LENGTH, file_in) != NULL) {
         itr = current_line; 
 
-        while (*itr != 0)
-        {
+        while (*itr != 0) {
 
-            if (*itr == '"')
-            {
-                if (in_quote == 1)
-                {
-                    if (has_escape_quote == 0)
-                    {   
-                        if (*(itr + 1) == '"' && *(itr + 2) != 0)
-                        {
+            if (*itr == '"') {
+                if (in_quote == 1) {
+                    if (has_escape_quote == 0) {   
+                        if (*(itr + 1) == '"' && *(itr + 2) != 0) {
                             has_escape_quote = 1;
                         }
-                        else
-                        {
+                        else {
                             in_quote = 0;
                         }
                     }
-                    else 
-                    {
+                    else  {
                         *cell_itr = '"'; 
                         ++cell_itr;
                         has_escape_quote = 0;
                     }
                 }
-                else
-                {
+                else {
                     in_quote = 1;
                 }
             }
-            else if(*itr == delim)
-            {
-                if(in_quote)
-                {
+            else if(*itr == delim) {
+                if(in_quote) {
                     *cell_itr = *itr;
                     ++cell_itr;
                 }
-                else
-                {
+                else {
                     //append cell to row
                     *cell_itr = 0;
                     cell_len = cell_itr - current_cell;
                     row->row[row->num_items] = (char*) malloc((cell_len + 1) * sizeof(char));
-                    if ( row->row[row->num_items] == NULL)
-                    {
+                    if ( row->row[row->num_items] == NULL) {
                         return 0;
                     }
                     strcpy(row->row[row->num_items], current_cell);
@@ -126,32 +108,27 @@ Row* csv_get_row(FILE *file_in, char delim, unsigned int max_cell_count)
                     cell_itr = current_cell;
                 }
             }
-            else
-            {
+            else {
                 *cell_itr = *itr;
                 ++cell_itr;
             }
             ++itr;
         }
 
-        if (in_quote == 0)
-        {
+        if (in_quote == 0) {
             // finish up the last column;
-            if (cell_itr != 0 && cell_itr > current_cell)
-            {
+            if (cell_itr != 0 && cell_itr > current_cell) {
 
                 *cell_itr = 0;
                 cell_len = cell_itr - current_cell;
 
-                if (current_cell[cell_len - 1] == '\n')
-                {
+                if (current_cell[cell_len - 1] == '\n') {
                     current_cell[cell_len - 1] = 0;
                     cell_len -= 1;
                 }
 
                 row->row[row->num_items] = (char*)malloc((cell_len + 1) * sizeof(char));
-                if ( row->row[row->num_items] == NULL)
-                {
+                if ( row->row[row->num_items] == NULL) {
                     return 0;
                 }
 
@@ -167,8 +144,7 @@ Row* csv_get_row(FILE *file_in, char delim, unsigned int max_cell_count)
     free(current_line);
 
     // if empty then return false
-    if (row->num_items == 0)
-    {
+    if (row->num_items == 0) {
         free(row->row);
         free(row->cell_length);
         free(row);
@@ -182,29 +158,24 @@ Row* csv_get_row(FILE *file_in, char delim, unsigned int max_cell_count)
 }
 
 
-unsigned int csv_write_row(FILE *file_out, Row *row, char delim)
-{
+unsigned int csv_write_row(FILE *file_out, Row *row, char delim) {
     int i, j, itm;
     unsigned char has_delim = 0;
     unsigned char has_quote = 0 ;
     char new_line = '\n';
     char null = '\0';
-    for (i = 0; i < row->num_items; i++)
-    {
+    for (i = 0; i < row->num_items; i++) {
         has_delim = 0;
         has_quote = 0;
         itm       = 1;
 
         //enough memory if every single char has to be escaped
         char char_tmp_str[row->cell_length[i] * 2 + 3]; 
-        for(j = 0; j < row->cell_length[i]; j++)
-        {
-            if (row->row[i][j] == delim)
-            {
+        for(j = 0; j < row->cell_length[i]; j++) {
+            if (row->row[i][j] == delim) {
                 has_delim = 1;
             }
-            else if(row->row[i][j] ==  '"')
-            {
+            else if(row->row[i][j] ==  '"') {
                 has_quote = 1;
                 char_tmp_str[itm] = '"';
                 itm += 1;
@@ -212,20 +183,17 @@ unsigned int csv_write_row(FILE *file_out, Row *row, char delim)
             char_tmp_str[itm] = row->row[i][j]; 
             itm += 1;
         }
-        if (has_quote == 1 || has_delim == 1)
-        {
+        if (has_quote == 1 || has_delim == 1) {
             // wrap quote
             char_tmp_str[0] = '"';
             char_tmp_str[itm] = '"';
             fwrite(char_tmp_str, sizeof(char), itm + 1, file_out);
         }
-        else
-        {
+        else {
             fwrite(char_tmp_str + 1, sizeof(char), itm - 1, file_out);
         }
 
-        if (i != row->num_items - 1)
-        {
+        if (i != row->num_items - 1) {
             fwrite(&delim, sizeof(char), 1, file_out);
         }
     }
